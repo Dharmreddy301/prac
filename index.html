@@ -1,6 +1,7 @@
 <html>
   <head>
     <title>OpenGL ES 2.0 Programming Guide - Chapter_8/Simple_VertexShader</title>
+    <div>fps: <span id="fps"></span></div>
     <meta http-equiv="content-type" content="text/html; charset=ISO-8859-1">
     <script type="text/javascript" src="esShader.js"></script>
     <script type="text/javascript" src="esShapes.js"></script>
@@ -8,6 +9,12 @@
     <script type="text/javascript" src="esUtil.js"></script>
 
     <script type="text/javascript">
+
+
+
+
+
+
 //
 // Book:      OpenGL(R) ES 2.0 Programming Guide
 // Authors:   Aaftab Munshi, Dan Ginsburg, Dave Shreiner
@@ -18,11 +25,14 @@
 //            http://www.opengles-book.com
 //
 
-// Simple_VertexShader
+// Simple_Texture2D.c
 //
-//    This is a simple example that draws a rotating cube in perspective
-//    using a vertex shader to transform the object
+//    This is a simple example that draws a quad with a 2D
+//    texture image. The purpose of this example is to demonstrate 
+//    the basics of 2D texturing
 //
+
+
 
 UserData = function()
 {
@@ -31,15 +41,23 @@ UserData = function()
 
    // Attribute locations
    this.positionLoc = 0;
+   this.texCoordLoc = 0;
 
    // Uniform locations
    this.mvpLoc = 0;
 
    // Vertex data
    this.vertPosObject = 0;
+   this.texPosObject =0;
    this.indicesObject = 0;
    this.numIndices = 0;
 
+   // Sampler location
+   this.samplerLoc = 0;
+
+   // Texture handle
+   this.textureId = 0;
+   
    // Rotation angle
    this.angle = 0.0;
 
@@ -48,25 +66,65 @@ UserData = function()
 
 }
 
+
+
 ///
-// Initialize the shader and program object
+// Load texture from image
 //
+//function LoadTexture ( texture )
+//{
+  // var width,
+    //   height;
+
+   //gl.bindTexture ( gl.TEXTURE_2D, texture );
+//   gl.texImage2D ( gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, texture.image );
+  // gl.texParameteri ( gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR );
+   //gl.texParameteri ( gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR );
+   //gl.texParameteri ( gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE );
+   //gl.texParameteri ( gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE );
+//}
+
+function loadTexture(url) {
+    const texture = gl.createTexture();
+    const image = new Image();
+    image.crossOrigin = "Anonymous";
+
+    image.onload = e => {
+        gl.bindTexture(gl.TEXTURE_2D, texture);
+        
+        gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, image);
+
+        gl.generateMipmap(gl.TEXTURE_2D);
+    };
+
+    image.src = url;
+    return texture;
+}
+            
+
+
 function Init ( esContext )
 {
    var userData = esContext.userData;
    var vShaderStr =
-      'uniform mat4 u_mvpMatrix;                   \n\
-       attribute vec4 a_position;                  \n\
-       void main()                                 \n\
-       {                                           \n\
-          gl_Position = u_mvpMatrix * a_position;  \n\
-       }                                           \n';
+       
+      'uniform mat4 u_mvpMatrix;    \n\
+      attribute vec4 a_position;   \n\
+      attribute vec2 a_texCoord;            \n\
+      varying vec2 v_texCoord;             \n\
+      void main()                  \n\
+      {                            \n\
+       gl_Position = u_mvpMatrix * vec4(a_position,1); \n\
+      }                            \n';
 
    var fShaderStr =
-      'precision mediump float;                            \n\
+      'precision mediump float;    \n\
+      varying vec2 v_texCoord;             \n\
+      uniform sampler2D s_texture; \n\
+
        void main()                                         \n\
        {                                                   \n\
-         gl_FragColor = vec4( 1.0, 0.0, 0.0, 1.0 );        \n\
+         gl_FragColor = texture2D( s_texture, v_texCoord );        \n\
        }                                                   \n';
 
    // Load the shaders and get a linked program object
@@ -77,11 +135,15 @@ function Init ( esContext )
 
    // Get the uniform locations
    userData.mvpLoc = gl.getUniformLocation( userData.programObject, "u_mvpMatrix" );
+   
+   userData.texCoordLoc = gl.getAttribLocation ( userData.programObject, "a_texCoord" );
+   
+   userData.samplerLoc = gl.getUniformLocation ( userData.programObject, "s_texture" );
 
    // Generate the vertex data
-   var shape = esGenCube( 1.0, true, false, false, true );
+   var shape = esGenCube( 1.0, true, false, true, true );
    userData.numIndices = shape.numIndices;
-
+   
 
    // Starting rotation angle for the cube
    userData.angle = 45.0;
@@ -90,36 +152,71 @@ function Init ( esContext )
    userData.vertPosObject = gl.createBuffer();
    gl.bindBuffer ( gl.ARRAY_BUFFER, userData.vertPosObject );
    gl.bufferData ( gl.ARRAY_BUFFER, shape.vertices, gl.STATIC_DRAW );
+   userData.texPosObject = gl.createBuffer();
+   gl.bindBuffer ( gl.ARRAY_BUFFER, userData.texPosObject );
+   gl.bufferData ( gl.ARRAY_BUFFER, shape.texCoords, gl.STATIC_DRAW );
    userData.indicesObject = gl.createBuffer();
    gl.bindBuffer ( gl.ELEMENT_ARRAY_BUFFER, userData.indicesObject );
    gl.bufferData ( gl.ELEMENT_ARRAY_BUFFER, shape.indices, gl.STATIC_DRAW );
+   
+    // Load the vertex position
+   
+   gl.vertexAttribPointer ( userData.positionLoc, 3, gl.FLOAT, false, 0, 0 );
+   gl.enableVertexAttribArray ( userData.positionLoc );
+   
+   
+   gl.vertexAttribPointer ( userData.texCoordLoc, 2, gl.FLOAT, false, 0, 0 );
+   gl.enableVertexAttribArray ( userData.texCoordLoc );
+   
 
-   gl.clearColor ( 0.0, 0.0, 0.0, 1.0 );
-   gl.disable(gl.BLEND);
-   gl.disable(gl.CULL_FACE);
-   gl.disable(gl.DEPTH_TEST);
+   // Load the index buffer
+   gl.bindBuffer ( gl.ELEMENT_ARRAY_BUFFER, userData.indicesObject );
+   
+   
+  userData.textureId = loadTexture(`default_brick.png`);
+  gl.activeTexture(gl.TEXTURE0);
+  gl.bindTexture(gl.TEXTURE_2D, userData.textureId);
+  
+  gl.useProgram(userData.programObject);
+  // gl.enable(gl.DEPTH_TEST);
+  gl.uniform1i(userData.samplerLoc, 0);
+
+ 
+   gl.clearColor ( 0.1, 0.1, 0.1, 1.0 );
+ 
    return true;
 }
 
 
-///
-// Update MVP matrix based on time
+
+
+const fpsElem = document.querySelector("#fps");
+// Draw a triangle using the shader pair created in Init()
 //
 function Update ( esContext, deltaTime )
 {
+
+   
    var userData = esContext.userData;
    var perspective = new ESMatrix();
    var modelview = new ESMatrix();
    var aspect;
+   
+   // Set the viewport
+   gl.viewport ( 0, 0, esContext.width, esContext.height );
 
    // Compute a rotation angle based on time to rotate the cube
    userData.angle += ( deltaTime / 25.0 );
    if( userData.angle >= 360.0 )
        userData.angle -= 360.0;
+ 
+    const fps = 1 / deltaTime;    
+   
+    fpsElem.textContent = fps.toFixed(1);
 
    // Compute the window aspect ratio
-   aspect = esContext.width / esContext.height;
-
+   aspect = esContext.width /  esContext.height;
+   
    // Generate a perspective matrix with a 60 degree FOV
    esMatrixLoadIdentity( perspective );
    esPerspective( perspective, 60.0, aspect, 1.0, 20.0 );
@@ -127,75 +224,38 @@ function Update ( esContext, deltaTime )
    // Generate a model view matrix to rotate/translate the cube
    esMatrixLoadIdentity( modelview );
 
-   // Translate away from the viewer
+
+   // Use the program object
+   gl.useProgram ( userData.programObject );
+   
+   gl.enable(gl.DEPTH_TEST);
+   //gl.enable(gl.CULL_FACE);
+
+   
+   gl.clear ( gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+
+   // Load the vertex position
    esTranslate( modelview, 0.0, 0.0, -2.0 );
 
    // Rotate the cube
    esRotate( modelview, userData.angle, 1.0, 0.0, 1.0 );
-
-   // Compute the final MVP by multiplying the
+   
+   // Compute the final MVP by multiplying the 
    // modevleiw and perspective matrices together
    esMatrixMultiply( userData.mvpMatrix, modelview, perspective );
    
-
-   // Set the viewport
-   gl.viewport ( 0, 0, esContext.width, esContext.height );
-
-   // Clear the color buffer
-   gl.clear ( gl.COLOR_BUFFER_BIT );
-
-   // Use the program object
-   gl.useProgram ( userData.programObject );
-
-   // Load the vertex position
-   gl.bindBuffer ( gl.ARRAY_BUFFER, userData.vertPosObject );
-   gl.vertexAttribPointer ( userData.positionLoc, 3, gl.FLOAT, false, 0, 0 );
-   gl.enableVertexAttribArray ( userData.positionLoc );
-
-   // Load the index buffer
-   gl.bindBuffer ( gl.ELEMENT_ARRAY_BUFFER, userData.indicesObject );
-
-   // Load the MVP matrix
    gl.uniformMatrix4fv( userData.mvpLoc, false, getAsFloat32Array(userData.mvpMatrix) );
-
-   // Draw the cube
+   //const nn = userData.vertices; 
+   //glDrawArrays(GL_TRIANGLES, 0, 36);
+   //gl.drawArrays(gl.TRIANGLES, 0, nn.length / 3);
    gl.drawElements ( gl.TRIANGLES, userData.numIndices, gl.UNSIGNED_SHORT, 0 );
-   
+
 }
 
-///
-// Draw a triangle using the shader pair created in Init()
-//
-function Draw ( esContext )
-{
-   var userData = esContext.userData;
 
-   // Set the viewport
-   gl.viewport ( 0, 0, esContext.width, esContext.height );
 
-   // Clear the color buffer
-   gl.clear ( gl.COLOR_BUFFER_BIT );
 
-   // Use the program object
-   gl.useProgram ( userData.programObject );
-
-   // Load the vertex position
-   gl.bindBuffer ( gl.ARRAY_BUFFER, userData.vertPosObject );
-   gl.vertexAttribPointer ( userData.positionLoc, 3, gl.FLOAT, false, 0, 0 );
-   gl.enableVertexAttribArray ( userData.positionLoc );
-
-   // Load the index buffer
-   gl.bindBuffer ( gl.ELEMENT_ARRAY_BUFFER, userData.indicesObject );
-
-   // Load the MVP matrix
-   gl.uniformMatrix4fv( userData.mvpLoc, false, getAsFloat32Array(userData.mvpMatrix) );
-
-   // Draw the cube
-   gl.drawElements ( gl.TRIANGLES, userData.numIndices, gl.UNSIGNED_SHORT, 0 );
-   
-}
-
-function main ()
+function main()
 {
    var canvas = document.getElementById("webgl-canvas");
    var esContext = new ESContext();
@@ -217,6 +277,6 @@ function main ()
 
 </head>
   <body onload="main();">
-    <canvas id="webgl-canvas" style="border: none;" width="320" height="240"></canvas>
+    <canvas id="webgl-canvas" style="border: none;" width="1080" height="740"></canvas>
 </body>
 </html>
