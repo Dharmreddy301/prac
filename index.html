@@ -223,8 +223,8 @@ function Init ( esContext )
   gl.bindTexture(gl.TEXTURE_2D, userData.textureId);
   
   gl.useProgram(userData.programObject);
-  // gl.enable(gl.DEPTH_TEST);
-  gl.uniform1i(userData.samplerLoc, 0);
+  //gl.enable(gl.DEPTH_TEST);
+  //gl.uniform1i(userData.samplerLoc, 0);
 
  
    gl.clearColor ( 0.1, 0.1, 0.1, 1.0 );
@@ -278,6 +278,9 @@ function Update ( esContext, deltaTime )
 
    
    gl.clear ( gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+  
+  
+   gl.uniform1i(userData.samplerLoc, 0 );
 
    // Load the vertex position
    esTranslate( modelview, 0.0, 0.0, -2.0 );
