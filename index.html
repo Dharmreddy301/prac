@@ -261,7 +261,7 @@ function Update ( esContext, deltaTime )
  
     userData.nt += deltaTime;
     userData.c++;
-    if(nt>=1)
+    if(userData.nt>=1)
     {
       const fps = userData.c / userData.nt;
       userData.c=0;
