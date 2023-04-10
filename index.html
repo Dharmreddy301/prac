@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html>
   <head>
     <title>OpenGL ES 2.0 Programming Guide - Chapter_8/Simple_VertexShader</title>
@@ -269,7 +270,7 @@ function Update ( esContext, deltaTime )
     }
         
    
-    fpsElem.textContent = fps;
+    fpsElem.textContent = fps.toFixed(1);
 
    // Compute the window aspect ratio
    aspect = esContext.width /  esContext.height;
