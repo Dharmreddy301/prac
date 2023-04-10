@@ -171,7 +171,7 @@ function Init ( esContext )
    gl.bindBuffer ( gl.ELEMENT_ARRAY_BUFFER, userData.indicesObject );
    
    
-  userData.textureId = LoadTexture("default_brick.png");
+  userData.textureId = loadTexture("default_brick.png");
   gl.activeTexture(gl.TEXTURE0);
   gl.bindTexture(gl.TEXTURE_2D, userData.textureId);
   
@@ -245,8 +245,8 @@ function Update ( esContext, deltaTime )
    gl.uniformMatrix4fv( userData.mvpLoc, false, getAsFloat32Array(userData.mvpMatrix) );
    //const nn = userData.vertices; 
    //glDrawArrays(GL_TRIANGLES, 0, 36);
-   //gl.drawArrays(gl.TRIANGLES, 0, nn.length / 3);
-   gl.drawElements ( gl.TRIANGLES, userData.numIndices, gl.UNSIGNED_SHORT, 0 );
+   gl.drawArrays(gl.TRIANGLES, 0, 36);
+   //gl.drawElements ( gl.TRIANGLES, userData.numIndices, gl.UNSIGNED_SHORT, 0 );
 
 }
 
