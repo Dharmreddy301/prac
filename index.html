@@ -256,7 +256,7 @@ function Update ( esContext, deltaTime )
    gl.viewport ( 0, 0, esContext.width, esContext.height );
 
    // Compute a rotation angle based on time to rotate the cube
-   userData.angle += ( deltaTime / 25.0 );
+   userData.angle += ( deltaTime / 35.0 );
    if( userData.angle >= 360.0 )
        userData.angle -= 360.0;
  
@@ -299,7 +299,7 @@ function Update ( esContext, deltaTime )
    esTranslate( modelview, 0.0, 0.0, -2.0 );
 
    // Rotate the cube
-   esRotate( modelview, Math.PI/60, 1.0, 0.0, 1.0 );
+   esRotate( modelview, userData.angle , 1.0, 0.0, 1.0 );
    
    // Compute the final MVP by multiplying the 
    // modevleiw and perspective matrices together
