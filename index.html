@@ -256,7 +256,7 @@ function Update ( esContext, deltaTime )
    gl.viewport ( 0, 0, esContext.width, esContext.height );
 
    // Compute a rotation angle based on time to rotate the cube
-   userData.angle += ( deltaTime / 35.0 );
+   userData.angle += ( deltaTime / 15.0 );
    if( userData.angle >= 360.0 )
        userData.angle -= 360.0;
  
