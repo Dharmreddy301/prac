@@ -239,6 +239,8 @@ function Init ( esContext )
 const fpsElem = document.querySelector("#fps");
 // Draw a triangle using the shader pair created in Init()
 //
+      int c=0;
+      float nt=0;
 function Update ( esContext, deltaTime )
 {
 
@@ -256,7 +258,15 @@ function Update ( esContext, deltaTime )
    if( userData.angle >= 360.0 )
        userData.angle -= 360.0;
  
-    const fps = 1 / deltaTime;    
+    nt += deltaTime;
+    c++;
+    if(nt>=1)
+    {
+      const fps = c / nt;
+      c=0;
+      nt=0;
+    }
+        
    
     fpsElem.textContent = fps.toFixed(1);
 
