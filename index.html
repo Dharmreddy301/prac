@@ -172,7 +172,7 @@ function Init ( esContext )
    gl.bindBuffer ( gl.ELEMENT_ARRAY_BUFFER, userData.indicesObject );
    
    
-  userData.textureId = loadTexture(`default_brick.png`);
+  userData.textureId = loadTexture("default_brick.png");
   gl.activeTexture(gl.TEXTURE0);
   gl.bindTexture(gl.TEXTURE_2D, userData.textureId);
   
