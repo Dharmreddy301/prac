@@ -62,6 +62,9 @@ UserData = function()
    
    // Rotation angle
    this.angle = 0.0;
+  
+   this.c =0;
+   this.nt =0;
 
    // MVP matrix
    this.mvpMatrix = new ESMatrix();
@@ -237,7 +240,6 @@ function Init ( esContext )
 
 
 const fpsElem = document.querySelector("#fps");
-float c=0,nt=0;
 // Draw a triangle using the shader pair created in Init()
 //
 function Update ( esContext, deltaTime )
@@ -257,13 +259,13 @@ function Update ( esContext, deltaTime )
    if( userData.angle >= 360.0 )
        userData.angle -= 360.0;
  
-    nt += deltaTime;
-    c++;
+    userData.nt += deltaTime;
+    userData.c++;
     if(nt>=1)
     {
-      const fps = c / nt;
-      c=0;
-      nt=0;
+      const fps = userData.c / userData.nt;
+      userData.c=0;
+      userData.nt=0;
     }
         
    
