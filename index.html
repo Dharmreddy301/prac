@@ -51,6 +51,8 @@ UserData = function()
    this.texPosObject =0;
    this.indicesObject = 0;
    this.numIndices = 0;
+  
+  this.vertBytes
 
    // Sampler location
    this.samplerLoc = 0;
@@ -137,10 +139,55 @@ function Init ( esContext )
    userData.texCoordLoc = gl.getAttribLocation ( userData.programObject, "a_texCoord" );
    
    userData.samplerLoc = gl.getUniformLocation ( userData.programObject, "s_texture" );
+  
+  var vertices = new Float32Array([
+        -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
+         0.5f, -0.5f, -0.5f,  1.0f, 0.0f,
+         0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+         0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+        -0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
+        -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
+
+        -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+         0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+         0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
+         0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
+        -0.5f,  0.5f,  0.5f,  0.0f, 1.0f,
+        -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+
+        -0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+        -0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+        -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+        -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+        -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+        -0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+
+         0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+         0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+         0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+         0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+         0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+         0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+
+        -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+         0.5f, -0.5f, -0.5f,  1.0f, 1.0f,
+         0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+         0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+        -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+        -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+
+        -0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
+         0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+         0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+         0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+        -0.5f,  0.5f,  0.5f,  0.0f, 0.0f,
+        -0.5f,  0.5f, -0.5f,  0.0f, 1.0f
+    ]);
+    
 
    // Generate the vertex data
-   var shape = esGenCube( 1.0, true, false, true, true );
-   userData.numIndices = shape.numIndices;
+   //var shape = esGenCube( 1.0, true, false, true, true );
+   //userData.numIndices = shape.numIndices;
    
 
    // Starting rotation angle for the cube
@@ -149,26 +196,26 @@ function Init ( esContext )
    // Generate the VBOs
    userData.vertPosObject = gl.createBuffer();
    gl.bindBuffer ( gl.ARRAY_BUFFER, userData.vertPosObject );
-   gl.bufferData ( gl.ARRAY_BUFFER, shape.vertices, gl.STATIC_DRAW );
-   userData.texPosObject = gl.createBuffer();
-   gl.bindBuffer ( gl.ARRAY_BUFFER, userData.texPosObject );
-   gl.bufferData ( gl.ARRAY_BUFFER, shape.texCoords, gl.STATIC_DRAW );
-   userData.indicesObject = gl.createBuffer();
-   gl.bindBuffer ( gl.ELEMENT_ARRAY_BUFFER, userData.indicesObject );
-   gl.bufferData ( gl.ELEMENT_ARRAY_BUFFER, shape.indices, gl.STATIC_DRAW );
+   gl.bufferData ( gl.ARRAY_BUFFER, vertices, gl.STATIC_DRAW );
+   userData.vertBytes = vertices.BYTES_PER_ELEMENT;
+   //gl.bindBuffer ( gl.ARRAY_BUFFER, userData.texPosObject );
+   //gl.bufferData ( gl.ARRAY_BUFFER, shape.texCoords, gl.STATIC_DRAW );
+   //userData.indicesObject = gl.createBuffer();
+   //gl.bindBuffer ( gl.ELEMENT_ARRAY_BUFFER, userData.indicesObject );
+   //gl.bufferData ( gl.ELEMENT_ARRAY_BUFFER, shape.indices, gl.STATIC_DRAW );
    
     // Load the vertex position
    
-   gl.vertexAttribPointer ( userData.positionLoc, 3, gl.FLOAT, false, 0, 0 );
+   gl.vertexAttribPointer ( userData.positionLoc, 3, gl.FLOAT, false, 5* userData.vertBytes, 0 );
    gl.enableVertexAttribArray ( userData.positionLoc );
    
    
-   gl.vertexAttribPointer ( userData.texCoordLoc, 2, gl.FLOAT, false, 0, 0 );
+   gl.vertexAttribPointer ( userData.texCoordLoc, 2, gl.FLOAT, false, 5 * userData.vertBytes, 3 * userData.vertBytes );
    gl.enableVertexAttribArray ( userData.texCoordLoc );
    
 
    // Load the index buffer
-   gl.bindBuffer ( gl.ELEMENT_ARRAY_BUFFER, userData.indicesObject );
+   //gl.bindBuffer ( gl.ELEMENT_ARRAY_BUFFER, userData.indicesObject );
    
    
   userData.textureId = loadTexture("default_brick.png");
