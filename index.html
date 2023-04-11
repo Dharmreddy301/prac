@@ -3,7 +3,7 @@
   <head>
     <title>OpenGL ES 2.0 Programming Guide - Chapter_8/Simple_VertexShader</title>
     <div>fps: <span id="fps"></span></div>
-    //<p id="myNumber"></p>
+    
     <meta http-equiv="content-type" content="text/html; charset=ISO-8859-1">
     <script type="text/javascript" src="esShader.js"></script>
     <script type="text/javascript" src="esShapes.js"></script>
@@ -276,7 +276,8 @@ function Update ( esContext, deltaTime )
       //userData.c=0;
       //userData.nt=0;
     //}
-    const fps = 1/deltaTime;    
+    float nt = deltaTime;
+    const fps = 1/nt;    
     fpsElem.textContent = fps;
     //fpsElem.textContent = fps;
     //console.log("FPS: " + fps);
