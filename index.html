@@ -261,10 +261,7 @@ function Update ( esContext, deltaTime )
    // Set the viewport
    gl.viewport ( 0, 0, esContext.width, esContext.height );
 
-   // Compute a rotation angle based on time to rotate the cube
-   userData.angle += ( deltaTime / 15.0 );
-   if( userData.angle >= 360.0 )
-       userData.angle -= 360.0;
+   
  
    // userData.nt += deltaTime;
     //userData.c++;
@@ -279,6 +276,11 @@ function Update ( esContext, deltaTime )
     //var nt = deltaTime;
     const fps = 1/deltaTime;
     deltaTime /= 0.001;
+  
+   // Compute a rotation angle based on time to rotate the cube
+   userData.angle += ( deltaTime / 15.0 );
+   if( userData.angle >= 360.0 )
+       userData.angle -= 360.0;
     fpsElem.textContent = fps;
     //fpsElem.textContent = fps;
     //console.log("FPS: " + fps);
