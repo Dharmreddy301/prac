@@ -61,6 +61,8 @@ UserData = function()
 
    // Texture handle
    this.textureId = 0;
+  
+   this.oldtime=0;
    
    // Rotation angle
    this.angle = 0.0;
@@ -245,10 +247,11 @@ const fpsElem = document.querySelector("#fps");
 var myNumberElement = document.getElementById("myNumber");      
 // Draw a triangle using the shader pair created in Init()
 //
+      
 function Update ( esContext, deltaTime )
 {
 
-   
+  var curTime = new Date().getTime();   
   
    var userData = esContext.userData;
    var perspective = new ESMatrix();
@@ -267,15 +270,15 @@ function Update ( esContext, deltaTime )
     userData.c++;
     if(userData.nt>=1)
     {
-      var fps = userData.c / userData.nt;
-      var myNumber = fps;
-      fpsElem.textContent = fps;
+      var mynumber = userData.c / userData.nt;
+      //var myNumber = fps;
+      
       myNumberElement.textContent = 1/myNumber;
       userData.c=0;
       userData.nt=0;
     }
-        
-    
+    const fps = 1/deltaTime;    
+    fpsElem.textContent = fps;
     //fpsElem.textContent = fps;
     //console.log("FPS: " + fps);
 
