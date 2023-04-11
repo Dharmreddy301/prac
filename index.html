@@ -270,7 +270,7 @@ function Update ( esContext, deltaTime )
       var fps = userData.c / userData.nt;
       var myNumber = fps;
       fpsElem.textContent = fps;
-      myNumberElement.textContent = myNumber;
+      myNumberElement.textContent = 1/myNumber;
       userData.c=0;
       userData.nt=0;
     }
