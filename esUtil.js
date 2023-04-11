@@ -57,6 +57,7 @@ function mainLoopCallback( esContext )
     if ( esContext.updateFunc != null)
     {
         var curTime = new Date().getTime();
+        curTime *= 0.001;
         if (lastTime != 0)
         {
             var elapsedTime = curTime - lastTime;
