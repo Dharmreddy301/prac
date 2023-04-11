@@ -3,7 +3,7 @@
   <head>
     <title>OpenGL ES 2.0 Programming Guide - Chapter_8/Simple_VertexShader</title>
     <div>fps: <span id="fps"></span></div>
-    <p id="myNumber"></p>
+    //<p id="myNumber"></p>
     <meta http-equiv="content-type" content="text/html; charset=ISO-8859-1">
     <script type="text/javascript" src="esShader.js"></script>
     <script type="text/javascript" src="esShapes.js"></script>
@@ -244,7 +244,7 @@ function Init ( esContext )
 
 
 const fpsElem = document.querySelector("#fps");
-var myNumberElement = document.getElementById("myNumber");      
+//var myNumberElement = document.getElementById("myNumber");      
 // Draw a triangle using the shader pair created in Init()
 //
       
@@ -266,17 +266,16 @@ function Update ( esContext, deltaTime )
    if( userData.angle >= 360.0 )
        userData.angle -= 360.0;
  
-    userData.nt += deltaTime;
-    userData.c++;
-    if(userData.nt>=1)
-    {
-      var mynumber = userData.c / userData.nt;
-      //var myNumber = fps;
+   // userData.nt += deltaTime;
+    //userData.c++;
+    //if(userData.nt>=1)
+    //{
+      //var mynumber = userData.c / userData.nt;
       
-      myNumberElement.textContent = 1/myNumber;
-      userData.c=0;
-      userData.nt=0;
-    }
+      //myNumberElement.textContent = 1/myNumber;
+      //userData.c=0;
+      //userData.nt=0;
+    //}
     const fps = 1/deltaTime;    
     fpsElem.textContent = fps;
     //fpsElem.textContent = fps;
