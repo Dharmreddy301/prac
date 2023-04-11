@@ -276,8 +276,9 @@ function Update ( esContext, deltaTime )
       //userData.c=0;
       //userData.nt=0;
     //}
-    float nt = deltaTime;
-    const fps = 1/nt;    
+    //var nt = deltaTime;
+    const fps = 1/deltaTime;
+    deltaTime /= 0.001;
     fpsElem.textContent = fps;
     //fpsElem.textContent = fps;
     //console.log("FPS: " + fps);
