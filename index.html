@@ -268,11 +268,12 @@ function Update ( esContext, deltaTime )
     if(userData.nt>=1)
     {
       var fps = userData.c / userData.nt;
+      myNumberElement.textContent = fps;
       userData.c=0;
       userData.nt=0;
     }
         
-    myNumberElement.textContent = fps;
+    
     //fpsElem.textContent = fps;
     //console.log("FPS: " + fps);
 
