@@ -267,7 +267,7 @@ function Update ( esContext, deltaTime )
     userData.c++;
     if(userData.nt>=1)
     {
-      const fps = userData.c / userData.nt;
+      var fps = userData.c / userData.nt;
       var myNumber = fps;
       myNumberElement.textContent = myNumber;
       userData.c=0;
